@@ -68,10 +68,10 @@ function get(url, reqListener) {
     oReq.send();
 }
 
-function getTeam(teamID) {
-    league.find((record) => {
-        if(record.entry === teamID) {
-            return record;
-        }
-    });
-}
+// function getTeam(teamID) {
+//     league.find((record) => {
+//         if(record.entry === teamID) {
+//             return record;
+//         }
+//     });
+// }
