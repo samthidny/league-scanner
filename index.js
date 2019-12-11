@@ -34,8 +34,34 @@ function updateTeam(team) {
         if (teamCount === league.length) {
             sortStandings();
             displayLeague();
+
+            start();
         }
     });
+}
+
+function commonPlayers() {
+    var playerCount = {};
+    league.forEach((team) => {
+        team.liveData.picks.forEach((pick) => {
+            playerID = pick.element;
+            if (playerCount[playerID]) {
+                playerCount[playerID]++;
+            } else {
+                playerCount[playerID] = 1;
+            }
+        });
+    });
+
+    var arr = [];
+    for (var p in playerCount) {
+        arr.push({
+            id: p,
+            count: playerCount[p]
+        });
+    }
+
+    return arr;
 }
 
 function sortStandings() {
@@ -59,7 +85,7 @@ function get(url, reqListener) {
     var oReq = new XMLHttpRequest();
     //oReq.onload = reqListener;
     oReq.onerror = reqError;
-    oReq.onreadystatechange = function() {
+    oReq.onreadystatechange = function () {
         if (oReq.readyState == XMLHttpRequest.DONE) {
             reqListener(JSON.parse(oReq.responseText));
         }
@@ -68,10 +94,43 @@ function get(url, reqListener) {
     oReq.send();
 }
 
-// function getTeam(teamID) {
-//     league.find((record) => {
-//         if(record.entry === teamID) {
-//             return record;
-//         }
-//     });
-// }
+
+
+
+function sortBy(field, desc) {
+    if (desc) {
+        return function (a, b) {
+            return b[field] - a[field];
+        }
+    } else {
+        return function (a, b) {
+            return a[field] - b[field];
+        }
+    }
+}
+
+function getPlayer(id) {
+    return players.find(player => {
+        return player.id === parseInt(id, 10);
+    });
+}
+
+function start() {
+
+
+    var playerTotals = commonPlayers();
+    playerTotals = playerTotals.sort(sortBy('count', true));
+
+    var data = playerTotals.map(countrec => {
+        return {
+            player: getPlayer(countrec.id),
+            count: countrec.count
+        };
+    });
+
+    console.log(data);
+
+    debugger;
+
+
+}
